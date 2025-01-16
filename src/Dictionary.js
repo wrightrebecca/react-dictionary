@@ -4,8 +4,9 @@ import Results from "./Results";
 import axios from "axios";
 
 export default function Dictionary() {
-  let [keyword, setKeyword] = useState("");
+  let [keyword, setKeyword] = useState("succeed");
   let [results, setResults] = useState(null);
+  let [loaded, setLoaded] = useState(false);
 
   function handleResponse(response) {
     console.log(response.data[0]);
@@ -13,23 +14,47 @@ export default function Dictionary() {
     setResults(response.data[0]);
   }
 
-  function search(event) {
-    event.preventDefault();
-
+  function search() {
     let apiUrl = `https://api.dictionaryapi.dev/api/v2/entries/en/${keyword}`;
     axios.get(apiUrl).then(handleResponse);
+  }
+
+  function handleSubmit(event) {
+    event.preventDefault();
+    search();
   }
 
   function handleKeywordChange(event) {
     setKeyword(event.target.value);
   }
 
-  return (
-    <div className="Dictionary">
-      <form onSubmit={search}>
-        <input type="search" autoFocus={true} onChange={handleKeywordChange} />
-      </form>
-      <Results results={results} />
-    </div>
-  );
+  function load() {
+    setLoaded(true);
+    search();
+  }
+
+  if (loaded) {
+    return (
+      <div className="Dictionary">
+        <section>
+          <h1>Search for the meaning of a word...</h1>
+          <form onSubmit={handleSubmit}>
+            <input
+              type="search"
+              autoFocus={true}
+              onChange={handleKeywordChange}
+              defaultValue="succeed"
+            />
+          </form>
+          <div className="hint">
+            Suggested words: humour, impossible, dismiss
+          </div>
+        </section>
+        <Results results={results} />
+      </div>
+    );
+  } else {
+    load();
+    return "Loading....";
+  }
 }

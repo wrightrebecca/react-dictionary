@@ -1,7 +1,10 @@
 body {
-  text-align: center;
   margin-top: 30px;
+  background-color: #d7e9ed;
 }
 h2 {
   color: turquoise;
+}
+a {
+  color: #c42369;
 }
